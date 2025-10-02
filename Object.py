@@ -32,6 +32,9 @@ class Object:
     def run(self):
         self.script(self)
 
+    def is_hovered(self, cursor):
+        return
+
     def show(self, cursor):
         if not self.anim:
             return

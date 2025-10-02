@@ -1,5 +1,5 @@
 import pygame
-from Object import Object
+from Object import Object, Hitbox
 from Objects.elysium_button import ElysiumButton
 from Tile import Tile, TileMap
 
@@ -67,12 +67,13 @@ obj0 = Object(screen, *tile_map.tiles[0].xy, [img], small_ai)
 ELYSIUM = Object(screen, tile_map.tiles[1].x, tile_map.tiles[1].y , elysssium_anim)
 objs = [obj0, ELYSIUM]
 
-elysium_button = ElysiumButton(screen, 70, height-72,  70, 70, (215, 215, 215), True)
+elysium_hitbox = Hitbox(70, height-72, 70, 70)
+elysium_button = ElysiumButton(screen, 70, height-72,  70, 70, (215, 215, 215), True, )
 
 
 interface = [elysium_button]
 
-
+# TODO: units
 
 while True:
     mouse = pygame.mouse.get_pos()

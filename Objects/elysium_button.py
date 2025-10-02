@@ -1,19 +1,21 @@
 from pygame import draw
 from pygame.image import load
 from Tile import Tile
+from Object import Object
 from spritesheet import SpriteSheet
 from timer import Timer
 
-
+# TODO: to be placeable, to make object from tile
 class ElysiumButton(Tile):
-    def __init__(self, surface, x, y, width_t, height_t, colour, is_draggable):
-        super().__init__(surface, x, y, width_t, height_t, colour, is_draggable)
+    def __init__(self, surface, x, y, width_t, height_t, colour, hitbox):
+        super().__init__(surface, x, y, width_t, height_t, colour, True)
 
         elysssium = load("sprites/elysium_spreadsheet.jpg").convert_alpha()
         elysssium = SpriteSheet(elysssium)
         self.anim = [
             elysssium.get_image(0, 206, 382, 0.40, (0, 0, 0))
         ]
+        self.agent_pic = SpriteSheet(load("sprites/Elysium_icon.webp").convert_alpha()).get_image(0, 180, 180, 0.4, (0,0,0))
         """
         elysssium = pygame.image.load("sprites/elysium_spreadsheet.jpg").convert_alpha()
         elysssium = SpriteSheet(elysssium)
@@ -41,5 +43,6 @@ class ElysiumButton(Tile):
             self.xy = cursor[0] + self.dragged_pos[0], cursor[1] + self.dragged_pos[1]
             self.show_dragged(cursor)
             return
+        # TODO: self.screen.blit(sprite, self.xy)
         draw.rect(self.surface, self.colour, [*self.xy, self.width, self.height])
 
