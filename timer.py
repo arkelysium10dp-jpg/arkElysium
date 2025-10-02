@@ -8,5 +8,4 @@ class Timer:
         self.until = seconds+minutes*60
 
     def is_late(self):
-        print(self.time - time())
         return self.time - time() < 0 - self.until
