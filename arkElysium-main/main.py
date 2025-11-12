@@ -76,36 +76,9 @@ game.interface.append(elysium_button)
 interface = [elysium_button]
 
 # TODO: units
-
-while True:
+running = True
+while running:
     mouse = pygame.mouse.get_pos()
-
-    for ev in pygame.event.get():
-
-        if ev.type == pygame.QUIT:
-            pygame.quit()
-            break
-
-        # checks if a mouse is clicked
-        if ev.type == pygame.MOUSEBUTTONDOWN:
-            print("CLICKED")
-            for i in tile_map:
-                if i.is_hovered(mouse):
-                    i.clicked(mouse)
-            for i in interface:
-                if i.is_hovered(mouse):
-                    i.clicked(mouse)
-
-            # if the mouse is clicked on the
-            # button the game is terminated
-            if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
-                pygame.quit()
-        if ev.type == pygame.MOUSEBUTTONUP:
-            print("Quitted CLICK")
-            for i in tile_map:
-                i.dragged = False
-            for i in interface:
-                i.dragged = False
 
 
     # fills the screen with a color
@@ -136,5 +109,36 @@ while True:
     for t in interface:
         t.show(mouse)
 
+
+
     # updates the frames of the game
     pygame.display.update()
+
+    for ev in pygame.event.get():
+
+
+        # checks if a mouse is clicked
+        if ev.type == pygame.MOUSEBUTTONDOWN:
+            print("CLICKED")
+            for i in tile_map:
+                if i.is_hovered(mouse):
+                    i.clicked(mouse)
+            for i in interface:
+                if i.is_hovered(mouse):
+                    i.clicked(mouse)
+
+            # if the mouse is clicked on the
+            # button the game is terminated
+            if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
+                pygame.quit()
+                running = False
+        if ev.type == pygame.QUIT:
+            pygame.quit()
+            running = False
+            break
+        if ev.type == pygame.MOUSEBUTTONUP:
+            print("Quitted CLICK")
+            for i in tile_map:
+                i.dragged = False
+            for i in interface:
+                i.dragged = False

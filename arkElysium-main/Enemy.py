@@ -8,7 +8,7 @@ dmg_type: 'PHYSICAL' / 'ARTS' / 'TRUE'
 """
 
 
-class OperatorObject(Object):
+class EnemyObject(Object):
     def __init__(self, hp, defence, resistance, speed, dmg, atk_speed, dmg_type,
                  dmg_area, direction, state, path,
                  surface, x, y, anim=None, script=lambda a: None, hitbox: Hitbox = None):

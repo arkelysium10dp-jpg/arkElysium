@@ -31,6 +31,12 @@ class Object:
         self.hitbox = hitbox
         self.data = {"anim_frame": 0}
 
+    def x(self):
+        return self.xy[0]
+
+    def y(self):
+        return self.xy[1]
+
     def run(self):
         self.script(self)
 

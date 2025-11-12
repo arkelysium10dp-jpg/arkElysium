@@ -3,20 +3,30 @@ from Object import Hitbox, Object
 
 """
 
+hp = max_hp
+sp = max_sp
+defence: int
+resistance: float
+dmg: int
+atk_speed: int
+dmg_area: Hitbox
+direction: 0/1/2/3 (right, up, left, down)
 type_sp: 'PASSIVE' / 'OFFENSIVE'
-dmg_type: 'PHYSICAL' / 'ARTS' / 'TRUE'
+dmg_type: 0/1/2 'PHYSICAL' / 'ARTS' / 'TRUE'
+init_sp: int
+
 
 """
 
 class OperatorObject(Object):
-    def __init__(self, hp, sp, type_sp, defence, resistance, dmg, atk_speed, dmg_type,
+    def __init__(self, hp: int, sp: int, type_sp, defence: int, resistance: float, dmg: int, atk_speed: int, dmg_type,
                  dmg_area, direction,
-                 surface, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None):
+                 surface, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None, init_sp=0):
         super().__init__(surface, x, y, anim, script, hitbox)
         self.max_hp = hp
         self.hp = hp
         self.max_sp = sp
-        self.sp = 0
+        self.sp = init_sp
         self.type_sp = type_sp
         self.defence = defence
         self.resistance = resistance
@@ -46,7 +56,7 @@ class OperatorObject(Object):
                     self.hp -= (dmg - self.defence)
             case "TRUE":
                 self.hp -= dmg
-        if self.hp < 0:
+        if self.hp <= 0:
             self.on_death(attacker)
 
     def attack(self, attacking_object):
