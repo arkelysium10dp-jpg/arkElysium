@@ -1,9 +1,18 @@
 from Object import Hitbox, Object
 
 """
-
-type_sp: 'PASSIVE' / 'OFFENSIVE'
-dmg_type: 'PHYSICAL' / 'ARTS' / 'TRUE'
+hp = max_hp
+sp = max_sp
+defence: int
+resistance: float
+speed: float
+dmg: int
+atk_speed: int
+dmg_type: 0/1/2 'PHYSICAL' / 'ARTS' / 'TRUE'
+dmg_area: Hitbox
+direction: 0/1/2/3 (right, up, left, down)
+state: ?
+path: Path
 
 """
 
@@ -50,7 +59,10 @@ class EnemyObject(Object):
                 self.hp -= dmg / self.resistance
             case "PHYSICAL":
                 if (dmg - self.defence) > 0:
-                    self.hp -= (dmg - self.defence)
+                    real_dmg = (dmg - self.defence)
+                else:
+                    real_dmg = dmg*0.03
+                self.hp -= real_dmg
             case "TRUE":
                 self.hp -= dmg
         if self.hp < 0:

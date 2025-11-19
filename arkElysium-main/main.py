@@ -1,3 +1,5 @@
+from os.path import curdir
+
 import pygame
 
 from Game import Game
@@ -72,8 +74,10 @@ objs = [obj0, ELYSIUM]
 elysium_hitbox = Hitbox(70, height-72, 70, 70)
 elysium_button = ElysiumButton(screen, game, 70, height-72,  70, 70, (215, 215, 215), True, )
 
+# game.game_tiles_colliders.append(tile)
+game.tile_maps.append(tile_map)
 game.interface.append(elysium_button)
-interface = [elysium_button]
+
 
 # TODO: units
 running = True
@@ -106,7 +110,7 @@ while running:
         o.run()
         o.show(mouse)
 
-    for t in interface:
+    for t in game.interface:
         t.show(mouse)
 
 
@@ -115,17 +119,21 @@ while running:
     pygame.display.update()
 
     for ev in pygame.event.get():
-
+        game.handle_events()
 
         # checks if a mouse is clicked
         if ev.type == pygame.MOUSEBUTTONDOWN:
             print("CLICKED")
+            obj = game.interface_clicked(mouse)
+            if obj:
+                obj.clicked(mouse)
             for i in tile_map:
                 if i.is_hovered(mouse):
                     i.clicked(mouse)
-            for i in interface:
-                if i.is_hovered(mouse):
-                    i.clicked(mouse)
+            collided = game.game_tiles_collide(mouse)
+            if collided:
+                if collided.is_hovered(mouse):
+                    collided.clicked(mouse)
 
             # if the mouse is clicked on the
             # button the game is terminated
@@ -140,5 +148,5 @@ while running:
             print("Quitted CLICK")
             for i in tile_map:
                 i.dragged = False
-            for i in interface:
+            for i in game.interface:
                 i.dragged = False

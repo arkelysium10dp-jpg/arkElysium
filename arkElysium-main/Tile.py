@@ -1,4 +1,4 @@
-from Object import Object
+from Object import Object, Hitbox
 from pygame import draw, Surface
 
 
@@ -14,6 +14,7 @@ class Tile(Object):
         self.is_draggable = is_draggable
         self.dragged = False
         self.dragged_pos = self.xy
+        self.hitbox = Hitbox(*self.xy, width_t, height_t)
 
     @property
     def y(self):
@@ -22,10 +23,6 @@ class Tile(Object):
     @property
     def x(self):
         return self.xy[0]
-
-    def is_hovered(self, cursor):
-        if self.x <= cursor[0] <= self.x + 140 and self.y <= cursor[1] <= self.y + 40:
-            return True
 
     def clicked(self, cursor):
         self.dragged_pos = (self.x - cursor[0], self.y - cursor[1])
@@ -65,9 +62,10 @@ class TileMap:
                 col = self.colors_gradient[
                     col_ind
                 ]
-                self.tiles.append(
-                Tile(st.surface, st.game, st.x+st.width*w, st.y+st.height*h,
+                n_tile = Tile(st.surface, st.game, st.x+st.width*w, st.y+st.height*h,
                      st.width, st.height, col, is_draggable = st.is_draggable)
+                self.tiles.append(
+                    n_tile
                 )
                 pass
 
@@ -76,15 +74,11 @@ class TileMap:
             yield t
 
     def tile_hovered(self, cursor): # ???
-        orig_tile = self._original_tile
-        if not orig_tile.is_draggable:
-            height = self.surface.get_height()
-            width = self.surface.get_width()
-            if orig_tile.x >= cursor[0] >= orig_tile.x*width*orig_tile.width & \
-                    orig_tile.y >= cursor[1] >= orig_tile.y*height*orig_tile.height:
-                tile_index = cursor[0]/self.surface.get_width()/ self.width * cursor[1]/height/self.height
-            return
-        return
+        for t in self.tiles:
+            if (t.x <= cursor[0] <= t.x+t.width) & \
+                (t.y <= cursor[1] <= t.y+t.height):
+                return t
+
 
     def clicked(self, cursor):
         return

@@ -2,6 +2,11 @@ from Object import Object
 
 
 class Path:
+    """
+    Used for scripts to determine path for usually EnemyObject
+
+    """
+
     def __init__(self, subject: Object, destination_points: list[list[int]]):
         self.subject = subject
         self.destination_points = destination_points

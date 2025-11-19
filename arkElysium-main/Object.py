@@ -1,5 +1,5 @@
 from timer import Timer
-
+from pygame import Surface
 
 class Hitbox:
     def __init__(self, x, y, h_width, h_height):
@@ -16,13 +16,13 @@ class Hitbox:
         return self.xy[0]
 
     def triggered(self, trigger_xy):
-        return self.x >= trigger_xy[0] >= self.x * self.width * self.width & \
-        self.y >= trigger_xy[1] >= self.y * self.height * self.height
+        return (self.x <= trigger_xy[0] <= self.x + self.width) & \
+        (self.y <= trigger_xy[1] <= self.y + self.height)
 
 class Object:
 
-    def __init__(self,surface, game, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None):
-        self.screen = surface
+    def __init__(self, screen, game, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None):
+        self.screen: Surface = screen
         self.game = game
         game.colliders.append(self)
         self.anim = anim
@@ -31,9 +31,11 @@ class Object:
         self.hitbox = hitbox
         self.data = {"anim_frame": 0}
 
+    @property
     def x(self):
         return self.xy[0]
 
+    @property
     def y(self):
         return self.xy[1]
 
@@ -41,7 +43,8 @@ class Object:
         self.script(self)
 
     def is_hovered(self, cursor):
-        return
+        if self.hitbox:
+            return self.hitbox.triggered(cursor)
 
     def show(self, cursor):
         if not self.anim:
