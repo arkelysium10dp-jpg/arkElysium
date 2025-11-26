@@ -1,7 +1,6 @@
 from InterfaceObject import InterfaceObject
 from Object import Object
 from Tile import GameTile, TileMap
-from outliner import Outliner
 
 
 class Game:
@@ -10,7 +9,6 @@ class Game:
         self.game_tiles_colliders: list[GameTile] = []
         self.tile_maps: list[TileMap] = []
         self.interface: list[InterfaceObject] = []
-        self.Outliner = Outliner()
         self._events = []
 
 
@@ -30,7 +28,7 @@ class Game:
                 if i.hitbox.triggered(xy):
                     return i
 
-    def game_tiles_collide(self, xy):
+    def game_tiles_collide(self, xy) -> GameTile:
         for i in self.game_tiles_colliders:
             if i.hitbox:
                 if i.hitbox.triggered(xy):

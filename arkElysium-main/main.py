@@ -116,7 +116,6 @@ while running:
 
 
     # updates the frames of the game
-    pygame.display.update()
 
     for ev in pygame.event.get():
         game.handle_events()
@@ -128,6 +127,7 @@ while running:
             if obj:
                 obj.clicked(mouse)
             for i in tile_map:
+                pygame.draw.rect(screen,[255,0,0], [i.x,i.y, 10,10])
                 if i.is_hovered(mouse):
                     i.clicked(mouse)
             collided = game.game_tiles_collide(mouse)
@@ -150,3 +150,4 @@ while running:
                 i.dragged = False
             for i in game.interface:
                 i.dragged = False
+    pygame.display.update()

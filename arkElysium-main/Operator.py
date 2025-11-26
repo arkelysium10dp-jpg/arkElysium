@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 from Object import Hitbox, Object
 
 
@@ -5,22 +7,45 @@ from Object import Hitbox, Object
 
 hp = max_hp
 sp = max_sp
-defence: int
-resistance: float
-dmg: int
-atk_speed: int
-dmg_area: Hitbox
-direction: 0/1/2/3 (right, up, left, down)
+position: 0/1 (Melee, Ranged)
 type_sp: 'PASSIVE' / 'OFFENSIVE'
+defence: int
+resistance: int
+dmg: int
+atk_speed: float
 dmg_type: 0/1/2 'PHYSICAL' / 'ARTS' / 'TRUE'
+dmg_area: Hitbox
+dp_cost: int
 init_sp: int
-
-
+block: int
+redeployment_time: float
+direction: 0/1/2/3 (right, up, left, down)
 """
+@dataclass
+class OperatorData:
+
+    # Attributes Declaration
+    # using Type Hints
+    hp: int
+    sp: int
+    position: int
+    type_sp: int
+    defence: int
+    resistance: int
+    dmg: int
+    atk_speed: float
+    dmg_type: int
+    dmg_area: Hitbox
+    dp_cost: int
+    init_sp: int
+    block: int
+    redeployment_time: float
+    script: None | str
+
 
 class OperatorObject(Object):
     def __init__(self, hp: int, sp: int, type_sp, defence: int, resistance: float, dmg: int, atk_speed: int, dmg_type,
-                 dmg_area, direction,
+                 dmg_area, direction, dp_cost: int, block:int, redeployment_time: float,
                  surface, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None, init_sp=0):
         super().__init__(surface, x, y, anim, script, hitbox)
         self.max_hp = hp
@@ -35,6 +60,16 @@ class OperatorObject(Object):
         self.dmg_type = dmg_type
         self.dmg_area = dmg_area
         self.direction = direction
+        self.dp_cost = dp_cost
+        self.block = block
+        self.redeployment_time = redeployment_time
+
+    @staticmethod
+    def initialize_agent(agent_data: OperatorData, direction, game, surface, x, y):
+        OperatorObject(
+            agent_data, direction=""
+        )
+        return
 
     def on_place(self, x, y):
         self.xy = x,y

@@ -1,48 +1,14 @@
 import pygame
-from pygame import draw, mask
+from pygame import draw
 from pygame.image import load
 
 from InterfaceObject import InterfaceObject
 from Object import Hitbox
-from Tile import Tile
+from outliner import generate_outline
 from spritesheet import SpriteSheet
 from timer import Timer
 
-def generate_masks(self, pic_list, a, b):
-    mask_list = []
-    for pic in pic_list:
-        surf = pygame.Surface((a, b))
-        surf.set_colorkey((0, 0, 0))
-        mask = pygame.mask.from_surface(pic)
-        pic_mask = mask.to_surface()
 
-        var = pygame.pixelarray.PixelArray(pic_mask)
-        var.replace((255, 255, 255), (255, 0, 0))
-        del var
-
-        surf.blit(pic_mask, (0, 0))
-        pic.set_alpha(100)
-        surf.blit(pic, (0, 0))
-
-        mask_list.append(surf)
-        pic.set_alpha(255)
-    return mask_list
-
-def generate_outline(pic_list, a, b):
-    outlined_list = []
-    for pic in pic_list:
-        surf = pygame.Surface((a, b))
-        surf.set_colorkey((0, 0, 0))
-        mask = pygame.mask.from_surface(pic)
-        pic_mask = mask.to_surface()
-        pic_mask.set_colorkey((0, 0, 0))
-        surf.blit(pic_mask, (0, 1))
-        surf.blit(pic_mask, (0, -1))
-        surf.blit(pic_mask, (1, 0))
-        surf.blit(pic_mask, (-1, 0))
-        surf.blit(pic, (0, 0))
-        outlined_list.append(surf)
-    return outlined_list
 
 # TODO: to be placeable, to make object from tile
 class ElysiumButton(InterfaceObject):
@@ -53,7 +19,6 @@ class ElysiumButton(InterfaceObject):
         self.orig_xy = x, y
         self.width = width_t
         self.height = height_t
-        self.initial_xy = self.xy
         self.colour = colour
         self.is_draggable = True
         self.dragged = False
@@ -89,6 +54,12 @@ class ElysiumButton(InterfaceObject):
             self.data["anim_timer"] = Timer(0.01)
         if self.data["anim_frame"] >= len(self.anim):
             self.data["anim_frame"] = 0
+        x, y = self.xy
+        # TODO: TOFIX
+        pygame.draw.line(self.screen, (255, 255, 255), (x, y - 160), (x + 160, y), 5)
+        pygame.draw.line(self.screen, (255, 255, 0), (x - 160, y), (x, y - 160), 5)
+        pygame.draw.line(self.screen, (255, 255, 255), (x, y + 160), (x - 160, y), 5)
+        pygame.draw.line(self.screen, (255, 255, 0), (x + 160, y), (x, y + 160), 5)
         return
 
     def show(self, cursor):
@@ -104,4 +75,6 @@ class ElysiumButton(InterfaceObject):
         self.xy = self.orig_xy
         draw.rect(self.screen, self.colour, [*self.xy, self.width, self.height])
         self.screen.blit(self.agent_pic, self.xy)
+
+
 
