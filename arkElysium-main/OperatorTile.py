@@ -1,4 +1,3 @@
-from turtle import Vec2D
 
 from pygame import Surface, draw, Vector2
 
@@ -30,7 +29,6 @@ class PlaceTile(InterfaceObject):
         self.collided = None
         self.until_deployment = until_deployment
         self.operator_data = operator_data
-
 
 
     def _process_anim(self):
@@ -71,6 +69,7 @@ class PlaceTile(InterfaceObject):
             return
         elif self.collided and not self.until_deployment:
             self.placing()
+            return
         self.xy = self.orig_xy
         draw.rect(self.screen, self.colour, [*self.xy, self.width, self.height])
         self.screen.blit(self.agent_pic, self.xy)
@@ -80,7 +79,16 @@ class PlaceTile(InterfaceObject):
         return
 
     def placing(self):
-        draw.line(self.screen, (255, 255, 255), (60, 80), (130, 100), 1)
+        self.show_dragged(True)
+        x, y = self.xy
+        x+=45
+        y+=90
+        print(x,y)
+        draw.line(self.screen, (255, 255, 255), (x, y - 160), (x + 160, y), 5)
+        draw.line(self.screen, (255, 255, 0), (x - 160, y), (x, y - 160), 5)
+        draw.line(self.screen, (255, 255, 255), (x, y + 160), (x - 160, y), 5)
+        draw.line(self.screen, (255, 255, 0), (x + 160, y), (x, y + 160), 5)
+        draw.rect(self.screen, (0,0,0), [x, y, 10, 10])
         return
 
     def on_place(self):

@@ -69,10 +69,11 @@ for i in range(0, 42):
 
 obj0 = Object(screen, game, *tile_map.tiles[0].xy, [img], small_ai)
 ELYSIUM = Object(screen, game, tile_map.tiles[1].x, tile_map.tiles[1].y , elysssium_anim)
-objs = [obj0, ELYSIUM]
+game.objs.append(obj0)
+game.objs.append(ELYSIUM)
 
 elysium_hitbox = Hitbox(70, height-72, 70, 70)
-elysium_button = ElysiumButton(screen, game, 70, height-72,  70, 70, (215, 215, 215), True, )
+elysium_button = ElysiumButton(screen, game, 70, height-72,  70, 70, (215, 215, 215))
 
 # game.game_tiles_colliders.append(tile)
 game.tile_maps.append(tile_map)
@@ -103,15 +104,8 @@ while running:
     # superimposing the text onto our button
     screen.blit(text, (width / 2 + 50, height / 2))
 
-    for i in tile_map:
-        i.show(mouse)
+    game.tick(mouse)
 
-    for o in objs:
-        o.run()
-        o.show(mouse)
-
-    for t in game.interface:
-        t.show(mouse)
 
 
 
@@ -150,4 +144,5 @@ while running:
                 i.dragged = False
             for i in game.interface:
                 i.dragged = False
-    pygame.display.update()
+    else:
+        pygame.display.update()

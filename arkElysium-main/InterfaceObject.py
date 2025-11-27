@@ -9,9 +9,14 @@ class InterfaceObject(Object):
         self.is_draggable = draggable
         self.dragged = False
         self.dragged_pos = self.xy
+        if hoverable:
+            self.game.hoverables.append(self)
 
     def is_hovered(self, cursor):
         return self.hitbox.triggered(cursor)
+
+    def hovered(self, cursor):
+        return
 
     def clicked(self, cursor):
         self.dragged_pos = (self.x - cursor[0], self.y - cursor[1])

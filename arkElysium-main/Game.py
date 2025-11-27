@@ -10,7 +10,21 @@ class Game:
         self.tile_maps: list[TileMap] = []
         self.interface: list[InterfaceObject] = []
         self._events = []
+        self.hoverables: list[Object] = []
+        self.objs = []
 
+    def tick(self, mouse):
+        for tm in self.tile_maps:
+            for i in tm:
+                i.show(mouse)
+
+        for o in self.objs:
+            o.run()
+            o.show(mouse)
+
+        for t in self.interface:
+            t.show(mouse)
+        return
 
     def handle_events(self):
         for i in self._events:
