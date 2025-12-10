@@ -1,0 +1,23 @@
+{
+  "elysium": {
+    "hp" : 1669,
+    "sp": 15,
+    "type_sp": 1,
+    "defence": 335,
+    "resistance": 0,
+    "dmg": 533,
+    "atk_speed": 1.3,
+    "dmg_type": 1,
+    "dmg_area": [1,2],
+    "init_sp": 3,
+    "dp_cost": 9,
+    "block": 1,
+    "redeployment_time": 70.0,
+    "spritesheet": "sprites/elysium_spreadsheet.jpg",
+    "agent_img": "sprites/Elysium_icon.webp",
+    "script": null
+  }
+
+
+
+}
