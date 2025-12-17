@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 
-from Object import Hitbox, Object
+from Object import TriggerBox, Object
 
 
 """
-
 hp = max_hp
 sp = max_sp
 position: 0/1 (Melee, Ranged)
@@ -35,7 +34,7 @@ class OperatorData:
     dmg: int
     atk_speed: float
     dmg_type: int
-    dmg_area: Hitbox
+    dmg_area: TriggerBox
     dp_cost: int
     init_sp: int
     block: int
@@ -46,8 +45,8 @@ class OperatorData:
 class OperatorObject(Object):
     def __init__(self, hp: int, sp: int, type_sp, defence: int, resistance: float, dmg: int, atk_speed: int, dmg_type,
                  dmg_area, direction, dp_cost: int, block:int, redeployment_time: float,
-                 surface, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None, init_sp=0):
-        super().__init__(surface, x, y, anim, script, hitbox)
+                 surface, x, y, anim = None, script = lambda a: None, hoverbox: TriggerBox = None, init_sp=0):
+        super().__init__(surface, x, y, anim, script, hoverbox)
         self.max_hp = hp
         self.hp = hp
         self.max_sp = sp
@@ -78,7 +77,7 @@ class OperatorObject(Object):
         return
 
     def on_collision(self, colliding_object):
-        if self.hitbox.triggered(colliding_object.xy):
+        if self.hoverbox.triggered(colliding_object.xy):
             print("OPERATOR COLLIDED")
             return
 

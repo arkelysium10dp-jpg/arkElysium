@@ -14,6 +14,8 @@ class Game:
         self.objs = []
 
     def tick(self, mouse):
+        for t in self.game_tiles_colliders:
+            t.show(mouse)
         for tm in self.tile_maps:
             for i in tm:
                 i.show(mouse)
@@ -26,30 +28,43 @@ class Game:
             t.show(mouse)
         return
 
-    def handle_events(self):
+    def handle_events(self, cursor):
         for i in self._events:
             i()
+        self.hovered(cursor)
 
     def interface_clicked(self, xy):
         for i in self.interface:
-            if i.hitbox:
-                if i.hitbox.triggered(xy):
+            if i.hoverbox:
+                if i.hoverbox.triggered(xy):
                     return i
 
     def collides_with(self, xy):
         for i in self.colliders:
-            if i.hitbox:
-                if i.hitbox.triggered(xy):
+            if i.hoverbox:
+                if i.hoverbox.triggered(xy):
                     return i
 
     def game_tiles_collide(self, xy) -> GameTile:
         for i in self.game_tiles_colliders:
-            if i.hitbox:
-                if i.hitbox.triggered(xy):
+            if i.hoverbox:
+                if i.hoverbox.triggered(xy):
                     return i
         for tm in self.tile_maps:
-            for i in tm:
-                tl = tm.tile_hovered(xy)
-                if tl:
-                    if i.hitbox.triggered(xy):
-                        return i
+            hv = tm.tile_hovered(xy)
+            if hv:
+                if hv.hoverbox.triggered(xy):
+                    return hv
+
+    def hovered(self, cursor):
+        for i in self.hoverables:
+            if i.is_hovered(cursor): i.hovered(cursor)
+        return
+
+    def quitted_click(self):
+        for tm in self.tile_maps:
+            for t in tm:
+                t.dragged = False
+        for i in self.interface:
+            i.dragged = False
+        return

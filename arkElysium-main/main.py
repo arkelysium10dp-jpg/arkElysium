@@ -1,11 +1,15 @@
 from os.path import curdir
 
 import pygame
+from pygame import draw, time
+from pygame.draw_py import draw_line
 
 from Game import Game
-from Object import Object, Hitbox
+from Object import Object, TriggerBox
 from Objects.elysium_button import ElysiumButton
-from Tile import Tile, TileMap
+from OperatorTile import PlaceTile
+from Tile import Tile, TileMap, GameTile
+from draw import draw_rect
 
 from spritesheet import SpriteSheet
 from timer import Timer
@@ -17,7 +21,8 @@ pygame.init()
 
 # screen resolution
 res = (720, 720)
-
+clock = pygame.time.Clock()
+dt = clock.tick(60)
 # opens up a window
 screen = pygame.display.set_mode(res)
 
@@ -72,10 +77,33 @@ ELYSIUM = Object(screen, game, tile_map.tiles[1].x, tile_map.tiles[1].y , elysss
 game.objs.append(obj0)
 game.objs.append(ELYSIUM)
 
-elysium_hitbox = Hitbox(70, height-72, 70, 70)
+elysium_hitbox = TriggerBox(70, height - 72, 70, 70)
 elysium_button = ElysiumButton(screen, game, 70, height-72,  70, 70, (215, 215, 215))
 
 # game.game_tiles_colliders.append(tile)
+test_tile = GameTile(screen, game, width /1.3, height / 4, 100, 100, (255, 255, 170), is_draggable=False, is_placeable=True)
+x, y = test_tile.xy
+wdt, hgt = test_tile.width, test_tile.height
+x_neg = int(x-wdt/2)
+x_pos = int(x+wdt/2)
+y_neg = int(y-hgt/2)
+y_pos = int(y+hgt/2)
+tst_lines = [
+    [[x_neg,int(y+hgt/2)], [int(x+wdt/2),int(y+hgt/2)]],
+    [[int(x-wdt/2),int(y-hgt/2)], [int(x+wdt/2),int(y-hgt/2)]],
+    [[x_pos,y_pos], [int(x+wdt/2), int(y-hgt/2)]],
+    [[x_neg,y_pos], [x_neg,y_neg]]
+]
+def tst_hvrd(c):
+    print(c)
+    draw_line(test_tile.screen, [0,255,0], *tst_lines[0])
+    draw_line(test_tile.screen, [0,255,0], *tst_lines[1])
+    draw_line(test_tile.screen, [0,255,0], *tst_lines[2])
+    draw_line(test_tile.screen, [0,255,0], *tst_lines[3])
+test_tile.hovered = tst_hvrd
+game.hoverables.append(test_tile)
+
+game.game_tiles_colliders.append(test_tile)
 game.tile_maps.append(tile_map)
 game.interface.append(elysium_button)
 
@@ -88,7 +116,7 @@ while running:
 
     # fills the screen with a color
     screen.fill((60, 25, 60))
-    print(mouse)
+    # print(mouse)
 
     # stores the (x,y) coordinates into
     # the variable as a tuple
@@ -96,10 +124,10 @@ while running:
     # if mouse is hovered on a button it
     # changes to lighter shade
     if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
-        pygame.draw.rect(screen, color_light, [width / 2, height / 2, 140, 40])
+        draw.rect(screen, color_light, [width / 2, height / 2, 140, 40])
 
     else:
-        pygame.draw.rect(screen, color_dark, [width / 2, height / 2, 140, 40])
+        draw.rect(screen, color_dark, [width / 2, height / 2, 140, 40])
 
     # superimposing the text onto our button
     screen.blit(text, (width / 2 + 50, height / 2))
@@ -110,9 +138,8 @@ while running:
 
 
     # updates the frames of the game
-
+    game.handle_events(mouse)
     for ev in pygame.event.get():
-        game.handle_events()
 
         # checks if a mouse is clicked
         if ev.type == pygame.MOUSEBUTTONDOWN:
@@ -121,7 +148,7 @@ while running:
             if obj:
                 obj.clicked(mouse)
             for i in tile_map:
-                pygame.draw.rect(screen,[255,0,0], [i.x,i.y, 10,10])
+                draw_rect(screen,[255,0,0], [i.x,i.y, 10,10])
                 if i.is_hovered(mouse):
                     i.clicked(mouse)
             collided = game.game_tiles_collide(mouse)
@@ -134,15 +161,9 @@ while running:
             if width / 2 <= mouse[0] <= width / 2 + 140 and height / 2 <= mouse[1] <= height / 2 + 40:
                 pygame.quit()
                 running = False
-        if ev.type == pygame.QUIT:
-            pygame.quit()
-            running = False
-            break
+                break
+
         if ev.type == pygame.MOUSEBUTTONUP:
-            print("Quitted CLICK")
-            for i in tile_map:
-                i.dragged = False
-            for i in game.interface:
-                i.dragged = False
+            game.quitted_click()
     else:
         pygame.display.update()

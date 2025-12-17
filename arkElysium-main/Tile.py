@@ -1,5 +1,7 @@
-from Object import Object, Hitbox
+from Object import Object, TriggerBox
 from pygame import draw, Surface
+
+from draw import draw_rect
 
 
 class Tile(Object):
@@ -14,7 +16,7 @@ class Tile(Object):
         self.is_draggable = is_draggable
         self.dragged = False
         self.dragged_pos = self.xy
-        self.hitbox = Hitbox(*self.xy, width_t, height_t)
+        self.hoverbox = TriggerBox(*self.xy, width_t, height_t)
 
     @property
     def y(self):
@@ -32,7 +34,7 @@ class Tile(Object):
     def show(self, cursor):
         if self.dragged:
             self.xy = cursor[0] + self.dragged_pos[0], cursor[1] + self.dragged_pos[1]
-        draw.rect(self.surface, self.colour, [*self.xy, self.width, self.height])
+        draw_rect(self.surface, self.colour, [*self.xy, self.width, self.height])
 
 
 class GameTile(Tile):
@@ -75,8 +77,8 @@ class TileMap:
 
     def tile_hovered(self, cursor): # ???
         for t in self.tiles:
-            if (t.x <= cursor[0] <= t.x+t.width) & \
-                (t.y <= cursor[1] <= t.y+t.height):
+            if (t.x - self.width/2 <= cursor[0] <= t.x+t.width/2) & \
+                (t.y - self.height/2 <= cursor[1] <= t.y+t.height/2):
                 return t
 
 

@@ -1,4 +1,4 @@
-from Object import Hitbox, Object
+from Object import TriggerBox, Object
 
 """
 hp = max_hp
@@ -20,8 +20,8 @@ path: Path
 class EnemyObject(Object):
     def __init__(self, hp, defence, resistance, speed, dmg, atk_speed, dmg_type,
                  dmg_area, direction, state, path,
-                 surface, x, y, anim=None, script=lambda a: None, hitbox: Hitbox = None):
-        super().__init__(surface, x, y, anim, script, hitbox)
+                 surface, x, y, anim=None, script=lambda a: None, hoverbox: TriggerBox = None):
+        super().__init__(surface, x, y, anim, script, hoverbox)
         self.max_hp = hp
         self.hp = hp
         self.defence = defence
@@ -36,7 +36,7 @@ class EnemyObject(Object):
         self.path = path
 
     def collided(self, colliding_object):
-        if self.hitbox.triggered(colliding_object.xy):
+        if self.hoverbox.triggered(colliding_object.xy):
             print("COLLIDED")
             return
 

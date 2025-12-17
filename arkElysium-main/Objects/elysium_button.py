@@ -1,23 +1,15 @@
-import pygame
-from pygame import draw
+from pygame.draw_py import draw_line
 from pygame.image import load
-
-from InterfaceObject import InterfaceObject
-from Object import Hitbox
 from OperatorTile import PlaceTile
-from outliner import generate_outline
 from spritesheet import SpriteSheet
-from timer import Timer
 
 
-
-# TODO: to be placeable, to make object from tile
 class ElysiumButton(PlaceTile):
     def __init__(self, surface, game, x, y, width_t, height_t, colour):
         elysssium = load("sprites/elysium_spreadsheet.jpg").convert_alpha()
         elysssium = SpriteSheet(elysssium)
         anim = [
-            elysssium.get_image(0, 206, 382, 0.40, (0, 0, 0))
+            elysssium.get_image(0, 206, 382, 0.32, (0, 0, 0))
         ]
         agent_pic = SpriteSheet(
             load("sprites/Elysium_icon.webp").convert_alpha()).get_image(
@@ -30,6 +22,25 @@ class ElysiumButton(PlaceTile):
         self.is_draggable = True
         self.dragged = False
         self.dragged_pos = self.xy
+
+    def hovered(self, cursor):
+        print("???YES???")
+        x, y = self.xy
+        wdt, hgt = self.width, self.height
+        x_neg = int(x - wdt / 2)
+        x_pos = int(x + wdt / 2)
+        y_neg = int(y - hgt / 2)
+        y_pos = int(y + hgt / 2)
+        tst_lines = [
+            [[x_neg, int(y + hgt / 2)], [int(x + wdt / 2), int(y + hgt / 2)]],
+            [[int(x - wdt / 2), int(y - hgt / 2)], [int(x + wdt / 2), int(y - hgt / 2)]],
+            [[x_pos, y_pos], [int(x + wdt / 2), int(y - hgt / 2)]],
+            [[x_neg, y_pos], [x_neg, y_neg]]
+        ]
+        draw_line(self.screen, [0, 255, 0], *tst_lines[0])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[1])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[2])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[3])
 
 
 
@@ -67,7 +78,7 @@ class ElysiumButton(PlaceTile):
             self.show_dragged()
             return
         self.xy = self.orig_xy
-        draw.rect(self.screen, self.colour, [*self.xy, self.width, self.height])
+        draw_rect(self.screen, self.colour, [*self.xy, self.width, self.height])
         self.screen.blit(self.agent_pic, self.xy)
         """
 

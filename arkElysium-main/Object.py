@@ -1,9 +1,9 @@
 from timer import Timer
 from pygame import Surface
 
-class Hitbox:
+class TriggerBox:
     def __init__(self, x, y, h_width, h_height):
-        self.xy = x, y
+        self.xy = x, y # central xy
         self.width = h_width
         self.height = h_height
 
@@ -16,20 +16,30 @@ class Hitbox:
         return self.xy[0]
 
     def triggered(self, trigger_xy):
-        return (self.x <= trigger_xy[0] <= self.x + self.width) & \
-        (self.y <= trigger_xy[1] <= self.y + self.height)
+        return (self.x-self.width/2 <= trigger_xy[0] <= self.x + self.width/2) & \
+        (self.y-self.height/2 <= trigger_xy[1] <= self.y + self.height/2)
 
 class Object:
 
-    def __init__(self, screen, game, x, y,  anim = None, script = lambda a: None, hitbox: Hitbox = None):
+    def __init__(self, screen, game, x, y, anim = None, script = lambda a: None, hoverbox: TriggerBox = None):
+        """
+        Base Object
+        x, y is central.
+        hitbox 
+        """
         self.screen: Surface = screen
         self.game = game
+        self.hoverable = False
         game.colliders.append(self)
         self.anim = anim
         self.xy = [x, y]
         self.script = script
-        self.hitbox = hitbox
+        self.hoverbox = hoverbox
         self.data = {"anim_frame": 0}
+
+    def display_xy(self, obj_width, obj_height):
+        """to regard xy as the center of object"""
+        return [self.x-obj_width/2, self.y-obj_height/2]
 
     @property
     def x(self):
@@ -43,8 +53,11 @@ class Object:
         self.script(self)
 
     def is_hovered(self, cursor):
-        if self.hitbox:
-            return self.hitbox.triggered(cursor)
+        if self.hoverbox:
+            return self.hoverbox.triggered(cursor)
+
+    def hovered(self, cursor):
+        return
 
     def show(self, cursor):
         if not self.anim:
