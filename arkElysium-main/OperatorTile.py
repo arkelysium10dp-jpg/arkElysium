@@ -87,6 +87,7 @@ class PlaceTile(InterfaceObject):
         return
 
     def show_dmg_area(self):
+        # TODO:
         dmg_area = self.operator_data["dmg_area"]
 
 
@@ -168,4 +169,5 @@ class PlaceTile(InterfaceObject):
     @staticmethod
     def get_operator_data(game, key):
         return game.operators_data[key]
+
 
