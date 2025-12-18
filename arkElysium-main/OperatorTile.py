@@ -1,3 +1,4 @@
+import json
 from math import sqrt
 from random import randint, seed, random
 
@@ -85,6 +86,10 @@ class PlaceTile(InterfaceObject):
         OperatorObject.initialize_agent(self.operator_data, direction, self.game, self.screen, tile.x, tile.y)
         return
 
+    def show_dmg_area(self):
+        dmg_area = self.operator_data["dmg_area"]
+
+
     def placing(self, cursor):
         self.show_dragged(True)
         self.hoverbox.xy = self.xy
@@ -99,6 +104,13 @@ class PlaceTile(InterfaceObject):
         draw_rect(self.screen, self.colour, [x/2, y/2, 10, 10])
         if self.dragged:
             print("IN DRAGGED")
+            area = self.operator_data["dmg_area"]
+
+            draw.line(self.screen, (0,0,255), cursor, (x, y), 100)
+
+
+            """# rendering a text written in
+            # this font
             w = randint(0, self.screen.get_width())
             h = randint(0, self.screen.get_height())
             rng = (int(0.001*(1.1**len(self.test))),int(0.01*(1.1**len(self.test))))
@@ -119,16 +131,8 @@ class PlaceTile(InterfaceObject):
                 #seed(r*g)
                 b = randint(0, 255-rng)
                 tr, tg, tb = r, g, b
-            smallfont = font.SysFont('Corbel', 35)
-            """sequence = "ILOVEYOU"
-            ind = len(self.test) - 1
-            while ind > len(sequence)-1:
-                ind-=len(sequence)-1
-            letter = sequence[ind]"""
-            # rendering a text written in
-            # this font
             exy = cursor
-
+            smallfont = font.SysFont('Corbel', 35)
 
             if not len(self.test):
                 self.test.append(Timer(-1))
@@ -140,7 +144,7 @@ class PlaceTile(InterfaceObject):
             # this font
             exy = cursor
             for letrs in self.test[1:]:
-                text = smallfont.render("ILOVEYOU", True, letrs[3])
+                text = smallfont.render("KYS", True, letrs[3])
                 if randint(0,100) >99:
                     exy = cursor
                 exy_chance = sqrt((exy[0]**2 - letrs[0][0]**2 + exy[1]**2 - letrs[0][1]**2)**2)
@@ -153,11 +157,15 @@ class PlaceTile(InterfaceObject):
                 self.screen.blit(text, (letrs[0]))
                 exy = letrs[0]
 
-            draw.line(self.screen, (r, g, b), cursor, (x, y), 100)
+            """
         return
 
     def on_place(self):
         self.collided.placed(self)
 
         return
+
+    @staticmethod
+    def get_operator_data(game, key):
+        return game.operators_data[key]
 

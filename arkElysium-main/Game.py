@@ -1,3 +1,5 @@
+from json import load
+
 from InterfaceObject import InterfaceObject
 from Object import Object
 from Tile import GameTile, TileMap
@@ -12,6 +14,9 @@ class Game:
         self._events = []
         self.hoverables: list[Object] = []
         self.objs = []
+        with open('data\\operators_data.json', 'r') as f:
+            # Parsing the JSON file into a Python dictionary
+            self.operators_data = load(f)
 
     def tick(self, mouse):
         for t in self.game_tiles_colliders:

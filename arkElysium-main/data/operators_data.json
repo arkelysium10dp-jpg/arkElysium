@@ -8,7 +8,7 @@
     "dmg": 533,
     "atk_speed": 1.3,
     "dmg_type": 1,
-    "dmg_area": [1,2],
+    "dmg_area": [[0,0],[1,0]],
     "init_sp": 3,
     "dp_cost": 9,
     "block": 1,

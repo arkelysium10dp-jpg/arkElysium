@@ -14,7 +14,8 @@ class ElysiumButton(PlaceTile):
         agent_pic = SpriteSheet(
             load("sprites/Elysium_icon.webp").convert_alpha()).get_image(
             0, 180, 180, 0.5, (0, 0, 0))
-        super().__init__(surface, game, x, y, anim=anim, script=lambda a: None, operator_data={}, agent_pic=agent_pic)
+        operator_data = self.get_operator_data(game, "elysium")
+        super().__init__(surface, game, x, y, anim=anim, script=lambda a: None, operator_data="", agent_pic=agent_pic)
         self.orig_xy = x, y
         self.width = width_t
         self.height = height_t
