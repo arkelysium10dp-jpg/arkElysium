@@ -2,7 +2,7 @@ import json
 from math import sqrt
 from random import randint, seed, random
 
-from pygame import Surface, draw, Vector2, font
+from pygame import Surface, draw, Vector2, font, transform
 
 import timer
 from InterfaceObject import InterfaceObject
@@ -27,7 +27,8 @@ class PlaceTile(InterfaceObject):
         super().__init__(surface, game, x, y,
                          anim, script, hoverbox, hoverable = True, draggable = True)
         self.width, self.height = width_t, height_t
-        self.outline_anim = generate_outline(self.anim, 180, 180)
+        # TODO: prev version self.outline_anim = generate_outline(self.anim, 65, 122)
+        self.outline_anim = generate_outline(self.anim, 65, 122)
         self.agent_pic = agent_pic
         self.orig_xy = self.xy
         self.colour = colour
@@ -49,16 +50,26 @@ class PlaceTile(InterfaceObject):
             self.data["anim_frame"] = 0
         return sprite
 
-    def show_dragged(self, outline=False):
+    def show_dragged(self, outline=False, direction = 0):
         sprite: Surface = self._process_anim()
         disp_xy = self.display_xy(sprite.get_width(), sprite.get_height()*1.5)
+        if direction == 2:
+            sprite = transform.flip(sprite, True, False)
         self.screen.blit(sprite, disp_xy)
+        print(sprite.get_width())
+        print(sprite.get_height())
         if outline:
             game_over_screen_fade = Surface((self.screen.get_width(), self.screen.get_height()))
             game_over_screen_fade.fill((0, 0, 0))
             game_over_screen_fade.set_alpha(200)
             self.screen.blit(game_over_screen_fade, (0, 0))
             outline = self.outline_anim[self.data["anim_frame"]]
+            #TODO: CHECK THIS 180 180 it was
+            print(outline.get_width())
+            print(outline.get_height())
+            if direction == 2:
+                outline = transform.flip(outline, True, False)
+
             self.screen.blit(outline, disp_xy)
             sprite.set_alpha(255)
         return
@@ -86,9 +97,31 @@ class PlaceTile(InterfaceObject):
         OperatorObject.initialize_agent(self.operator_data, direction, self.game, self.screen, tile.x, tile.y)
         return
 
-    def show_dmg_area(self):
-        # TODO:
+    def show_dmg_area(self, direction):
         dmg_area = self.operator_data["dmg_area"]
+        x, y = self.xy
+        for i in dmg_area:
+            ax, ay = i
+            if direction == 1:
+                ax, ay = ay, ax
+            if direction == 2:
+                ax = -ax
+            if direction == 3:
+                ax, ay = -ay, -ax
+            draw_rect(self.screen, (255, 0, 0, 50), [x+width_t*ax, y+height_t*ay, width_t, height_t])
+
+    def direction(self, cursor):
+        dx, dy = cursor
+        dx = self.x - dx
+        dy = self.y - dy
+        # main_factor: y or x value considered ->
+        main_factor = 1
+        if dx**2 > dy**2:
+            main_factor = 0
+        if self.xy[main_factor] - cursor[main_factor] > 0:
+            main_factor += 2
+        # main_factor -> direction
+        return main_factor
 
 
     def placing(self, cursor):
@@ -96,7 +129,7 @@ class PlaceTile(InterfaceObject):
         self.hoverbox.xy = self.xy
         x, y = self.xy
         # x, y = self.display_xy(self.width, self.height)
-
+        direction = 0
         draw.line(self.screen, (255, 255, 255), (x, y - 160), (x + 160, y), 5)
         draw.line(self.screen, (255, 255, 0), (x - 160, y), (x, y - 160), 5)
         draw.line(self.screen, (255, 255, 255), (x, y + 160), (x - 160, y), 5)
@@ -104,12 +137,8 @@ class PlaceTile(InterfaceObject):
         draw_rect(self.screen, (0,0,0), [x, y, 10, 10])
         draw_rect(self.screen, self.colour, [x/2, y/2, 10, 10])
         if self.dragged:
-            print("IN DRAGGED")
-            area = self.operator_data["dmg_area"]
-
-            draw.line(self.screen, (0,0,255), cursor, (x, y), 100)
-
-
+            direction = self.direction(cursor)
+            self.show_dmg_area(direction)
             """# rendering a text written in
             # this font
             w = randint(0, self.screen.get_width())
@@ -159,6 +188,7 @@ class PlaceTile(InterfaceObject):
                 exy = letrs[0]
 
             """
+
         return
 
     def on_place(self):
