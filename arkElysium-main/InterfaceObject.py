@@ -24,6 +24,7 @@ class InterfaceObject(Object):
             self.dragged = True
 
     def quitted_click(self):
-        self.dragged = False
+        if self.dragged:
+            self.dragged = False
 
 

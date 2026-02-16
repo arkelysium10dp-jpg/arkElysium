@@ -13,7 +13,7 @@ class Game:
         self.interface: list[InterfaceObject] = []
         self._events = []
         self.hoverables: list[Object] = []
-        self.objs = []
+        self.objs: list[Object] = []
         with open('data\\operators_data.json', 'r') as f:
             # Parsing the JSON file into a Python dictionary
             self.operators_data = load(f)
@@ -64,12 +64,18 @@ class Game:
     def hovered(self, cursor):
         for i in self.hoverables:
             if i.is_hovered(cursor): i.hovered(cursor)
+        for tm in self.tile_maps:
+            for t in tm:
+                if t.is_hovered(cursor): t.hovered(cursor)
         return
 
     def quitted_click(self):
+        print("quitted_click")
         for tm in self.tile_maps:
             for t in tm:
-                t.dragged = False
+                t.quitted_click()
         for i in self.interface:
-            i.dragged = False
+            i.quitted_click()
+        for i in self.objs:
+            i.quitted_click()
         return

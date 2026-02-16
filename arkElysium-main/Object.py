@@ -74,3 +74,6 @@ class Object:
         if self.data["anim_frame"] >= len(self.anim):
             self.data["anim_frame"] = 0
 
+    def quitted_click(self):
+        return
+

@@ -3,6 +3,7 @@ from math import sqrt
 from random import randint, seed, random
 
 from pygame import Surface, draw, Vector2, font, transform
+from pygame.draw import circle
 
 import timer
 from InterfaceObject import InterfaceObject
@@ -33,6 +34,7 @@ class PlaceTile(InterfaceObject):
         self.orig_xy = self.xy
         self.colour = colour
         self.collided = None
+        self.placed = False
         self.until_deployment = until_deployment
         self.operator_data = operator_data
         self.test = []
@@ -56,8 +58,6 @@ class PlaceTile(InterfaceObject):
         if direction == 2:
             sprite = transform.flip(sprite, True, False)
         self.screen.blit(sprite, disp_xy)
-        print(sprite.get_width())
-        print(sprite.get_height())
         if outline:
             game_over_screen_fade = Surface((self.screen.get_width(), self.screen.get_height()))
             game_over_screen_fade.fill((0, 0, 0))
@@ -65,8 +65,6 @@ class PlaceTile(InterfaceObject):
             self.screen.blit(game_over_screen_fade, (0, 0))
             outline = self.outline_anim[self.data["anim_frame"]]
             #TODO: CHECK THIS 180 180 it was
-            print(outline.get_width())
-            print(outline.get_height())
             if direction == 2:
                 outline = transform.flip(outline, True, False)
 
@@ -75,18 +73,23 @@ class PlaceTile(InterfaceObject):
         return
 
     def show(self, cursor):
-        if self.collided and not self.until_deployment:
+        if self.placed and not self.until_deployment:
             self.placing(cursor)
             return
         elif self.dragged and not self.until_deployment:
             self.xy = cursor[0] + self.dragged_pos[0], cursor[1] + self.dragged_pos[1]
-            collided = self.collided = self.game.game_tiles_collide(cursor)
+            self.collided = self.game.game_tiles_collide(cursor)
             if self.collided:
-                self.xy = (collided.xy[0], collided.xy[1])
+                # TODO: ADD EASIER SNAP
+                self.xy = (self.collided.xy[0], self.collided.xy[1])
                 self.show_dragged(True)
-                self.dragged = False
+                self.placing((-1,-1))
                 return
             self.show_dragged()
+            return
+        elif self.collided:
+            self.placed = True
+            self.placing(cursor)
             return
         self.xy = self.orig_xy
         self.hoverbox.xy = self.xy
@@ -108,7 +111,7 @@ class PlaceTile(InterfaceObject):
                 ax = -ax
             if direction == 3:
                 ax, ay = -ay, -ax
-            draw_rect(self.screen, (255, 0, 0, 50), [x+width_t*ax, y+height_t*ay, width_t, height_t])
+            draw_rect(self.screen, (255, 0, 0, 25), [x+width_t*ax, y+height_t*ay, width_t, height_t])
 
     def direction(self, cursor):
         dx, dy = cursor
@@ -194,6 +197,10 @@ class PlaceTile(InterfaceObject):
     def on_place(self):
         self.collided.placed(self)
 
+        return
+
+    def quitted_click(self):
+        self.dragged = False
         return
 
     @staticmethod

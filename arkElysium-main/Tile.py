@@ -36,6 +36,25 @@ class Tile(Object):
             self.xy = cursor[0] + self.dragged_pos[0], cursor[1] + self.dragged_pos[1]
         draw_rect(self.surface, self.colour, [*self.xy, self.width, self.height])
 
+    def hovered(self, cursor):
+        x, y = self.hoverbox.xy
+        wdt, hgt = self.hoverbox.width, self.hoverbox.height
+        x_neg = int(x - wdt / 2)
+        x_pos = int(x + wdt / 2)
+        y_neg = int(y - hgt / 2)
+        y_pos = int(y + hgt / 2)
+        tst_lines = [
+            [[x_neg, int(y + hgt / 2)], [int(x + wdt / 2), int(y + hgt / 2)]],
+            [[int(x - wdt / 2), int(y - hgt / 2)], [int(x + wdt / 2), int(y - hgt / 2)]],
+            [[x_pos, y_pos], [int(x + wdt / 2), int(y - hgt / 2)]],
+            [[x_neg, y_pos], [x_neg, y_neg]]
+        ]
+        from pygame.draw_py import draw_line
+        draw_line(self.screen, [0, 255, 0], *tst_lines[0])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[1])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[2])
+        draw_line(self.screen, [0, 255, 0], *tst_lines[3])
+
 
 class GameTile(Tile):
     def __init__(self, surface: Surface, game, x, y, width_t, height_t, colour, is_draggable, is_placeable: bool):
