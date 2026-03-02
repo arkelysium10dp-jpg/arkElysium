@@ -15,9 +15,19 @@ class TriggerBox:
     def x(self):
         return self.xy[0]
 
-    def triggered(self, trigger_xy):
-        return (self.x-self.width/2 <= trigger_xy[0] <= self.x + self.width/2) & \
-        (self.y-self.height/2 <= trigger_xy[1] <= self.y + self.height/2)
+    def triggered(self, trigger: list[int, int] | list[int, int, int, int]):
+        """triger: either x, y coordinates or box x, y and width, height"""
+        if len(trigger) == 2:
+            return (self.x - self.width / 2 <= trigger[0] <= self.x + self.width / 2) and \
+                (self.y - self.height / 2 <= trigger[1] <= self.y + self.height / 2)
+
+            # If 'trigger' is another box (x, y, w, h) - AABB Collision
+        elif len(trigger) == 4:
+            ox, oy, ow, oh = trigger
+            return (abs(self.x - ox) * 2 <= (self.width + ow)) and \
+                (abs(self.y - oy) * 2 <= (self.height + oh))
+        return False
+
 
 class Object:
 

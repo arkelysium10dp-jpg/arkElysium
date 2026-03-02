@@ -78,11 +78,29 @@ class PlaceTile(InterfaceObject):
             return
         elif self.dragged and not self.until_deployment:
             self.xy = cursor[0] + self.dragged_pos[0], cursor[1] + self.dragged_pos[1]
-            self.collided = self.game.game_tiles_collide(cursor)
+            x, y = self.xy
+            wdt, hgt = self.width, self.height
+            x_neg = int(x - wdt / 2)
+            x_pos = int(x + wdt / 2)
+            y_neg = int(y - hgt / 2)
+            y_pos = int(y + hgt / 2)
+            tst_lines = [
+                [[x_neg, int(y + hgt / 2)], [int(x + wdt / 2), int(y + hgt / 2)]],
+                [[int(x - wdt / 2), int(y - hgt / 2)], [int(x + wdt / 2), int(y - hgt / 2)]],
+                [[x_pos, y_pos], [int(x + wdt / 2), int(y - hgt / 2)]],
+                [[x_neg, y_pos], [x_neg, y_neg]]
+            ]
+            from pygame.draw_py import draw_line
+            draw_line(self.screen, [0, 255, 0], *tst_lines[0])
+            draw_line(self.screen, [0, 255, 0], *tst_lines[1])
+            draw_line(self.screen, [0, 255, 0], *tst_lines[2])
+            draw_line(self.screen, [0, 255, 0], *tst_lines[3])
+            self.collided = self.game.game_tiles_collide([cursor[0], cursor[1],self.width, self.height])
             if self.collided:
-                # TODO: ADD EASIER SNAP
+                # TODO: ADD EASIER SNAP v2
+                # TODO: ADD CANCEL BUTTON.
                 self.xy = (self.collided.xy[0], self.collided.xy[1])
-                self.show_dragged(True)
+                self.show_dragged(True, )
                 self.placing((-1,-1))
                 return
             self.show_dragged()
@@ -139,7 +157,7 @@ class PlaceTile(InterfaceObject):
         draw.line(self.screen, (255, 255, 0), (x + 160, y), (x, y + 160), 5)
         draw_rect(self.screen, (0,0,0), [x, y, 10, 10])
         draw_rect(self.screen, self.colour, [x/2, y/2, 10, 10])
-        if self.dragged:
+        if self.dragged and self.placed:
             direction = self.direction(cursor)
             self.show_dmg_area(direction)
             """# rendering a text written in
@@ -196,7 +214,6 @@ class PlaceTile(InterfaceObject):
 
     def on_place(self):
         self.collided.placed(self)
-
         return
 
     def quitted_click(self):

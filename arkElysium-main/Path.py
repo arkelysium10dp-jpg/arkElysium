@@ -21,7 +21,7 @@ class Path:
             return
         if x > dx:
             x -= speed
-        elif x > dx:
+        elif x < dx:
             x+= speed
         if y > dy:
             y -= speed

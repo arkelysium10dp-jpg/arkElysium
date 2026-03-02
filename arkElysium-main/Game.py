@@ -50,15 +50,18 @@ class Game:
                 if i.hoverbox.triggered(xy):
                     return i
 
-    def game_tiles_collide(self, xy) -> GameTile:
+    def game_tiles_collide(self, collider: list[int, int] | list[int, int, int, int], selection: str = None) -> GameTile:
+        """collider: either x, y coordinates or box xy and width, height"""
+        if selection:
+            raise Exception("TODO: SELECTION IS NOT DONE")
         for i in self.game_tiles_colliders:
             if i.hoverbox:
-                if i.hoverbox.triggered(xy):
+                if i.hoverbox.triggered(collider):
                     return i
         for tm in self.tile_maps:
-            hv = tm.tile_hovered(xy)
+            hv = tm.tile_hovered(collider)
             if hv:
-                if hv.hoverbox.triggered(xy):
+                if hv.hoverbox.triggered(collider):
                     return hv
 
     def hovered(self, cursor):
