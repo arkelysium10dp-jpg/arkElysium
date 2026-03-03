@@ -9,6 +9,7 @@ import timer
 from InterfaceObject import InterfaceObject
 from Object import TriggerBox
 from Operator import OperatorObject
+from button import Button
 from draw_arrow import draw_arrow
 from draw import draw_rect
 from outliner import generate_outline
@@ -156,7 +157,10 @@ class PlaceTile(InterfaceObject):
         draw.line(self.screen, (255, 255, 255), (x, y + 160), (x - 160, y), 5)
         draw.line(self.screen, (255, 255, 0), (x + 160, y), (x, y + 160), 5)
         draw_rect(self.screen, (0,0,0), [x, y, 10, 10])
-        draw_rect(self.screen, self.colour, [x/2, y/2, 10, 10])
+        draw_rect(self.screen, self.colour, [x/2, y/1.8, 70, 70])
+
+        Button(self.screen, self.game, x/2, y/1.8, 70, 70)
+
         if self.dragged and self.placed:
             direction = self.direction(cursor)
             self.show_dmg_area(direction)
