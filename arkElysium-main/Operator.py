@@ -65,10 +65,14 @@ class OperatorObject(Object):
 
     @staticmethod
     def initialize_agent(agent_data: OperatorData, direction, game, surface, x, y):
-        OperatorObject(
-            agent_data, direction=""
+        # TODO: TRANSITION
+        return OperatorObject(
+            **agent_data,  # Unpacks hp, sp, type_sp, defence, resistance, etc.
+            direction=direction,  # Explicitly setting direction from the local variable
+            surface=surface,
+            x=x,
+            y=y
         )
-        return
 
     def on_place(self, x, y):
         self.xy = x,y

@@ -39,6 +39,8 @@ class PlaceTile(InterfaceObject):
         self.until_deployment = until_deployment
         self.operator_data = operator_data
         self.test = []
+        self.cancel_button = None
+        self.placement_ready = None
 
     def _process_anim(self):
         sprite = self.anim[self.data["anim_frame"]]
@@ -99,7 +101,6 @@ class PlaceTile(InterfaceObject):
             self.collided = self.game.game_tiles_collide([cursor[0], cursor[1],self.width, self.height])
             if self.collided:
                 # TODO: ADD EASIER SNAP v2
-                # TODO: ADD CANCEL BUTTON.
                 self.xy = (self.collided.xy[0], self.collided.xy[1])
                 self.show_dragged(True, )
                 self.placing((-1,-1))
@@ -138,13 +139,17 @@ class PlaceTile(InterfaceObject):
         dy = self.y - dy
         # main_factor: y or x value considered ->
         main_factor = 1
-        if dx**2 > dy**2:
-            main_factor = 0
+        if abs(dx) > abs(dy): main_factor = 0
         if self.xy[main_factor] - cursor[main_factor] > 0:
             main_factor += 2
         # main_factor -> direction
         return main_factor
 
+    def reset_placement(self):
+        self.placed = False
+        self.dragged = False
+        self.collided = None
+        self.xy = self.orig_xy
 
     def placing(self, cursor):
         self.show_dragged(True)
@@ -158,12 +163,24 @@ class PlaceTile(InterfaceObject):
         draw.line(self.screen, (255, 255, 0), (x + 160, y), (x, y + 160), 5)
         draw_rect(self.screen, (0,0,0), [x, y, 10, 10])
         draw_rect(self.screen, self.colour, [x/2, y/1.8, 70, 70])
-
-        Button(self.screen, self.game, x/2, y/1.8, 70, 70)
-
+        if self.placed and not self.cancel_button:
+            cancel_button = Button(self.screen, self.game, x / 2, y / 1.8, 70, 70)
+            def cancel_button_func(func_cursor):
+                self.reset_placement()
+                self.game.interface.remove(cancel_button)
+                self.cancel_button = None
+            cancel_button.clicked = cancel_button_func
+            self.cancel_button = cancel_button
+            self.game.interface.append(cancel_button)
         if self.dragged and self.placed:
+            if self.hoverbox.triggered(cursor):
+                self.placement_ready = None
+                return
             direction = self.direction(cursor)
             self.show_dmg_area(direction)
+            self.placement_ready = direction
+        elif self.placement_ready:
+            self.transform_into_operator(self.placement_ready, self.collided)
             """# rendering a text written in
             # this font
             w = randint(0, self.screen.get_width())

@@ -82,3 +82,10 @@ class Game:
         for i in self.objs:
             i.quitted_click()
         return
+
+    def remove(self, obj: Object| InterfaceObject):
+        if self.colliders.__contains__(obj): return self.colliders.remove(obj)
+        if self.interface.__contains__(obj): return self.interface.remove(obj)
+        if self.game_tiles_colliders.__contains__(obj): return self.interface.remove(obj)
+        return False
+
