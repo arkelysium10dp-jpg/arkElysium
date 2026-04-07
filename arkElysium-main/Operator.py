@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
 from Object import TriggerBox, Object
+from pygame.image import load
 
+from spritesheet import SpriteSheet
 
 """
 hp = max_hp
@@ -25,6 +27,7 @@ class OperatorData:
 
     # Attributes Declaration
     # using Type Hints
+
     hp: int
     sp: int
     position: int
@@ -45,8 +48,14 @@ class OperatorData:
 class OperatorObject(Object):
     def __init__(self, hp: int, sp: int, type_sp, defence: int, resistance: float, dmg: int, atk_speed: int, dmg_type,
                  dmg_area, direction, dp_cost: int, block:int, redeployment_time: float,
-                 surface, x, y, anim = None, script = lambda a: None, hoverbox: TriggerBox = None, init_sp=0):
+                 surface, x, y, spritesheet = None, script = lambda a: None, hoverbox: TriggerBox = None, init_sp=0):
+        anim = load(spritesheet).convert_alpha()
+        anim = SpriteSheet(anim)
+        anim = [
+            anim.get_image(0, 206, 382, 0.32, (0, 0, 0))
+        ]
         super().__init__(surface, x, y, anim, script, hoverbox)
+        # TODO: self.op_id = ...
         self.max_hp = hp
         self.hp = hp
         self.max_sp = sp
@@ -66,6 +75,7 @@ class OperatorObject(Object):
     @staticmethod
     def initialize_agent(agent_data: OperatorData, direction, game, surface, x, y):
         # TODO: TRANSITION
+
         return OperatorObject(
             **agent_data,  # Unpacks hp, sp, type_sp, defence, resistance, etc.
             direction=direction,  # Explicitly setting direction from the local variable
